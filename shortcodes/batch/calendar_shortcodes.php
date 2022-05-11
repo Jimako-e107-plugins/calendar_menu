@@ -319,7 +319,7 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	public function sc_ec_nav_but_allevents($parm = '')
 	{
 		$allevents = (e_PAGE == "event.php" ? EC_LAN_96 : EC_LAN_93);
-		return "<input class='btn button' type='submit' style='width:140px;' name='viewallevents' value='".$allevents."' title='".$allevents."' />";
+		return "<input class='btn btn-calendar' type='submit' style='width:140px;' name='viewallevents' value='".$allevents."' title='".$allevents."' />";
 	}
 
 	public function sc_ec_nav_but_viewcat($parm = '')
@@ -331,7 +331,7 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	{
 		if (isset($this->ecalClass->pref['eventpost_asubs']) && ($this->ecalClass->pref['eventpost_asubs']>0) && USER)
 		{
-			return "<input class='btn button' type='submit' style='width:140px;' name='subs' value='".EC_LAN_123."' title='".EC_LAN_182."' />";
+			return "<input class='btn btn-calendar' type='submit' style='width:140px;' name='subs' value='".EC_LAN_123."' title='".EC_LAN_182."' />";
 		}
 		return '';
 	}
@@ -341,7 +341,7 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 		$ret = "<input type='hidden' name='enter_new_val' value='".$this->prop."' />";
 		if ($this->ecalClass->cal_super || check_class($this->ecalClass->pref['eventpost_admin']))
 		{
-			$ret .= "<input class='btn button' type='submit' style='width:140px;' name='doit' value='".EC_LAN_94."' />";
+			$ret .= "<input class='btn btn-calendar' type='submit' style='width:140px;' name='doit' value='".EC_LAN_94."' />";
 		}
 		return $ret;
 	}
@@ -351,7 +351,7 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 		$ret = '';
 		if ($this->month != $this->nowMonth || $this->year != $this->nowYear || $this->ds == 'one')
 		{	// Just jump to current page without a query part - that will default to today
-			$ret = "<input class='btn button' type='button' style='width:140px;' name='cur' value='".EC_LAN_40."' onclick=\"javascript:document.location='".e_SELF."'\" />";
+			$ret = "<input class='btn btn-calendar' type='button' style='width:140px;' name='cur' value='".EC_LAN_40."' onclick=\"javascript:document.location='".e_SELF."'\" />";
 		}
 		return $ret;
 	}
@@ -360,7 +360,7 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	{
 		if (isset($this->ecalClass->pref['eventpost_printlists']) && ($this->ecalClass->pref['eventpost_printlists']>0) && USER)
 		{
-			return "<input class='btn button' type='submit' style='width:140px;' name='printlists' value='".EC_LAN_164."' title='".EC_LAN_183."' />";
+			return "<input class='btn btn-calendar' type='submit' style='width:140px;' name='printlists' value='".EC_LAN_164."' title='".EC_LAN_183."' />";
 		}
 		else
 		{

@@ -497,9 +497,9 @@ class ecal_class
 	 */
 	function gmgetdate($date)
 	{
-//		$value = getdate($date-date('Z') + (date('I') ? 3600 : 0));
-		//$value = getdate($date-date('Z', $date));
-		$value = getdate($date);
+		//$value = getdate($date-date('Z') + (date('I') ? 3600 : 0)); - from 0.7
+	    $value = getdate($date-date('Z', $date)); 
+	    //	$value = getdate($date);  doesn't work with negative timezones
 		$value['month'] = $this->months[$value['mon'] - 1];		// Looks like getdate doesn't use the specified site language
 		return $value;
 	}

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="Event Calendar" lan="LAN_PLUGIN_CALENDAR_MENU_NAME" version="3.72" date="2012-08-01" compatibility="2.0" installRequired="true" >
+<e107Plugin name="Event Calendar" lan="LAN_PLUGIN_CALENDAR_MENU_NAME" version="3.73" date="2021-11-05" compatibility="2.3" installRequired="true" >
 	<author name="e107 Inc." url="http://e107.org" />
 	<summary>This plugin is a fully featured event calendar with calendar menu.</summary>
 	<description lan="LAN_PLUGIN_CALENDAR_MENU_DESCRIPTION" >This plugin is a fully featured event calendar with calendar menu.</description>
