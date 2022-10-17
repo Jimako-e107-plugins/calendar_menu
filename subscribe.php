@@ -36,7 +36,7 @@ require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
 
 if (!is_object($ecal_class)) $ecal_class = new ecal_class;
 
-include_lan(e_PLUGIN .'calendar_menu/languages/'.e_LANGUAGE.'.php');
+e107::lan('calendar_menu', e_LANGUAGE, false); 
 define('PAGE_NAME', EC_LAN_80);
 require_once(HEADERF);
 

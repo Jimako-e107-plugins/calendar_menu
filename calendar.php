@@ -68,7 +68,8 @@ if (isset($_POST['printlists']))
 //$calSc = new event_calendar_shortcodes();
 $calSc = e107::getScBatch('calendar', 'calendar_menu');
 
-include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
+e107::lan('calendar_menu', e_LANGUAGE , false); 
+ 
 define('PAGE_NAME', EC_LAN_121);
 
 require_once(e_PLUGIN.'calendar_menu/ecal_class.php');

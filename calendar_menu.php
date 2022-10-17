@@ -39,7 +39,7 @@ if($cacheData = $e107->ecache->retrieve($cache_tag, $ecal_class->max_cache_time)
 	echo $cacheData;
 	return;
 }
-include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
+e107::lan('calendar_menu', e_LANGUAGE, false); 
  
 $calendartemplate   = e107::getTemplate('calendar_menu', 'calendar');
    
