@@ -40,15 +40,9 @@ if($cacheData = $e107->ecache->retrieve($cache_tag, $ecal_class->max_cache_time)
 	return;
 }
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
-
-/* for now, both templates are the same */
-if(deftrue('BOOTSTRAP') === 3)  {
-   $calendartemplate   = e107::getTemplate('calendar_menu', 'calendarbootstrap3');
-}
-else {
-	 $calendartemplate   = e107::getTemplate('calendar_menu', 'calendarlegacy'  );
-
-}
+ 
+$calendartemplate   = e107::getTemplate('calendar_menu', 'calendar');
+   
 
 $CALENDAR_MENU_HDG_LINK_CLASS  = $calendartemplate['calendar_menu']['hdg_link_class'];
 $CALENDAR_MENU_START           = $calendartemplate['calendar_menu']['start'];

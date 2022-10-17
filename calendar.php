@@ -75,14 +75,8 @@ require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
 $ecal_class = new ecal_class;
 
 
-if(deftrue('BOOTSTRAP') === 3)  {
-   $calendartemplate   = e107::getTemplate('calendar_menu', 'calendarbootstrap3' );
-   $calSc->wrapper('calendarbootstrap3/calendar');
-}
-else {
-	 $calendartemplate   = e107::getTemplate('calendar_menu', 'calendarlegacy' );
-	 $calSc->wrapper('calendarlegacy/calendar');
-} 
+$calendartemplate   = e107::getTemplate('calendar_menu', 'calendar' );
+$calSc->wrapper('calendar/calendar');
 
 $CALENDAR_TIME_TABLE_START      = $calendartemplate['calendar']['time_table_start'];  
 $CALENDAR_TIME_TABLE		        = $calendartemplate['calendar']['time_table']; 

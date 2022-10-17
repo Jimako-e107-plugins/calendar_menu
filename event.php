@@ -174,9 +174,8 @@ if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  |
 			if ($mult_count <= 1)
 			{
 				$qry = " 0, '".intval($ev_start)."', '".intval($ev_end)."', '".$ev_allday."', '".$recurring."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$ev_email."', '".$ev_category."', '".$ev_thread."', '".intval($rec_m)."', '".intval($rec_y)."' ";
-				$sql->db_Insert('event', $qry);
-	
-				$id = mysqli_insert_id();
+				$id =  $sql->insert('event', $qry);
+				 
 				$data = array('method'=>'create', 'table'=>'event', 'id'=>$id, 'plugin'=>'calendar_menu', 'function'=>'dbCalendarCreate');
 				$e_event->triggerHook($data);
 	
@@ -706,14 +705,10 @@ if ($action == 'ne' || $action == 'ed')
 // $month, $year have the month required
 //-----------------------------------------------
  		 
-if(deftrue('BOOTSTRAP') === 3)  {
-   $calendartemplate   = e107::getTemplate('calendar_menu', 'calendarbootstrap3' , 'event');
-   $calSc->wrapper('calendarbootstrap3/event');  
-}
-else {
-	 $calendartemplate   = e107::getTemplate('calendar_menu', 'calendarlegacy', 'event');
-	 $calSc->wrapper('calendarlegacy/event');  
-} 
+
+$calendartemplate   = e107::getTemplate('calendar_menu', 'calendar', 'event');
+$calSc->wrapper('calendar/event');  
+
   
 $EVENT_TIME_TABLE_START						= $calendartemplate['time_table_start'];         
 $EVENT_TIME_TABLE									= $calendartemplate['time_table']; 

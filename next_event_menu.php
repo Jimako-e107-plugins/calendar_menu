@@ -45,16 +45,9 @@ $calSc = e107::getScBatch('calendar', 'calendar_menu');
 //require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
 //$calSc = new event_calendar_shortcodes();
 
- 
-if(deftrue('BOOTSTRAP') === 3)  {
-   $calendartemplate   = e107::getTemplate('calendar_menu', 'calendarbootstrap3' , 'next_event_menu' );
-   $calSc->wrapper('calendarbootstrap3/next_event_menu');   
-}
-else {
-	 $calendartemplate   = e107::getTemplate('calendar_menu', 'calendarlegacy' , 'next_event_menu' );
-	 $calSc->wrapper('calendarlegacy/next_event_menu'); 
 
-}
+$calendartemplate   = e107::getTemplate('calendar_menu', 'calendar', 'event');
+$calSc->wrapper('calendar/event');  
            
 $EVENT_CAL_FE_LINE = $calendartemplate['cal_fe_line'];
 
