@@ -59,11 +59,11 @@ else {
 $EVENT_CAL_FE_LINE = $calendartemplate['cal_fe_line'];
 
 // Values defined through admin pages
-$menu_title = varset($this->ecal_class->pref['eventpost_menuheading'],EC_LAN_140);
-$days_ahead = varset($this->ecal_class->pref['eventpost_daysforward'],30);			// Number of days ahead to go
-$show_count = varset($this->ecal_class->pref['eventpost_numevents'],3);				// Number of events to show
-$show_recurring = varset($this->ecal_class->pref['eventpost_checkrecur'],1);			// Zero to exclude recurring events
-$link_in_heading = varset($this->ecal_class->pref['eventpost_linkheader'],0);			// Zero for simple heading, 1 to have clickable link
+$menu_title = varset($ecal_class->pref['eventpost_menuheading'],EC_LAN_140);
+$days_ahead = varset($ecal_class->pref['eventpost_daysforward'],30);			// Number of days ahead to go
+$show_count = varset($ecal_class->pref['eventpost_numevents'],3);				// Number of events to show
+$show_recurring = varset($ecal_class->pref['eventpost_checkrecur'],1);			// Zero to exclude recurring events
+$link_in_heading = varset($ecal_class->pref['eventpost_linkheader'],0);			// Zero for simple heading, 1 to have clickable link
 
 
 $start_time = $ecal_class->cal_timedate;
