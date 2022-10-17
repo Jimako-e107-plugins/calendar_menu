@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="Event Calendar" lan="LAN_PLUGIN_CALENDAR_MENU_NAME" version="3.73" date="2021-11-05" compatibility="2.3" installRequired="true" >
-	<author name="e107 Inc." url="http://e107.org" />
-	<summary>This plugin is a fully featured event calendar with calendar menu.</summary>
-	<description lan="LAN_PLUGIN_CALENDAR_MENU_DESCRIPTION" >This plugin is a fully featured event calendar with calendar menu.</description>
+<e107Plugin name="Event Calendar" lan="LAN_PLUGIN_CALENDAR_MENU_NAME" version="4.0" date="2022-10-17" compatibility="2.3" installRequired="true" >
+	<author name="Jimako" url="https://www.e107sk.com" />
+	<summary>This plugin is a fully featured event calendar with calendar menu created by e107 Inc.</summary>
+	<description lan="LAN_PLUGIN_CALENDAR_MENU_DESCRIPTION" >This plugin is a fully featured event calendar with calendar menu created by e107 Inc.</description>
 	<readMe>readme.pdf</readMe>
 	<category>content</category>
 	<keywords>
@@ -14,11 +14,11 @@
 		<word>year</word>
 	</keywords>
 	<adminLinks>
-		<link url='admin_config.php' description='LAN_PLUGIN_CALENDAR_MENU_CONFIG' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' primary='true' >LAN_PLUGIN_CALENDAR_MENU_CONFIG</link>
-		<link url='admin_config.php?cat' description='EC_ADLAN_A11' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A11</link>
-		<link url='admin_config.php?forthcoming' description='EC_ADLAN_A100' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A100</link>
-		<link url='admin_config.php?maint' description='EC_ADLAN_A141' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A141</link>
-		<link url='admin_config.php?subs' description='EC_ADLAN_A173' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A173</link>		
+		<link url='admin/admin_config.php' description='LAN_PLUGIN_CALENDAR_MENU_CONFIG' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' primary='true' >LAN_PLUGIN_CALENDAR_MENU_CONFIG</link>
+		<link url='admin/admin_category.php' description='EC_ADLAN_A11' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A11</link>
+		<link url='admin/admin_config.php?forthcoming' description='EC_ADLAN_A100' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A100</link>
+		<link url='admin/admin_config.php?maint' description='EC_ADLAN_A141' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A141</link>
+		<link url='admin/admin_config.php?subs' description='EC_ADLAN_A173' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A173</link>		
 	</adminLinks>
 	<siteLinks>
 		<link url="{e_PLUGIN}calendar_menu/calendar.php" >LAN_PLUGIN_CALENDAR_MENU_LINK</link>		

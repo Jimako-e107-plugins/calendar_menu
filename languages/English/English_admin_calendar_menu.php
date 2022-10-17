@@ -228,3 +228,6 @@ define('EC_ADLAN_A224', 'Event Calendar - Bulk Delete');
 define('EC_ADLAN_A225', 'Event Calendar - multiple add ');
 define('EC_ADLAN_A226', '');
 define('EC_ADLAN_A227', '');
+
+
+
