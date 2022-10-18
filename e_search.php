@@ -26,7 +26,46 @@
 
 if (!defined('e107_INIT')) { exit(); }
 
-e107::lan('calendar_menu', 'search', true); 
+e107::lan('calendar_menu', 'search', true);
 
-$search_info[] = array('sfile' => e_PLUGIN.'calendar_menu/search/search_parser.php', 'qtype' => CM_SCH_LAN_1, 'refpage' => 'calendar.php');
+class calendar_menu_search extends e_search // include plugin-folder in the name.
+{
+	function config()
+	{
+		$search = array(
+			'name'			=> CM_SCH_LAN_1,
+	 
+			'table'			=> 'event',
+
+			'advanced' 		=> array(),
+
+			'return_fields'	=> array('event_id, event_start, event_title, event_location, event_details'),
+			'search_fields'	=> array('event_title' => '1.2', 'event_location' =>'0.6', 'event_details' => '0.6'), // fields and weights.
+
+			'order'			=>  array('event_start' => 'DESC'),
+			'refpage'		=> 'calendar.php'
+		);
+
+		return $search;
+	}
+
+	/* Compile Database data for output */
+	function compile($row)
+	{
+		$res = array();
+		$con = e107::getDate();
+
+		$res['link'] 		= 	e_PLUGIN . "calendar_menu/event.php?" . time() . ".event." . $row['event_id'];
+		$res['pre_title'] 	= "";
+		$res['title'] 		= $row['event_title'];
+		$res['summary'] 	= $row['event_details'];
+		$res['detail'] 		=
+		$row['event_location'] . " | " . $con->convert_date($row['event_start'], "long");
+
+		return $res;
+	}
+
+}
+
+
 
