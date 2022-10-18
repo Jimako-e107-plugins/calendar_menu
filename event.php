@@ -19,6 +19,7 @@
  *	@subpackage	event_calendar
  */
 
+
 if (!defined('e_SINGLE_ENTRY'))
 {
 	require_once('../../class2.php');
@@ -26,6 +27,17 @@ if (!defined('e_SINGLE_ENTRY'))
 $e107 = e107::getInstance();
 $frm = e107::getForm();
 $tp = e107::getParser();
+
+/* testing retrieve()
+$ev_category = 3;
+$row =  e107::getDb()->retrieve('event_cat', 'event_cat_addclass, event_cat_id', 'event_cat_id = ' . $ev_category);
+
+$qs			= explode('.', e_QUERY);
+$id = 1;
+$row =  e107::getDb()->retrieve('event', '*', 'event_id='.$id );
+print_a($qs);
+print_a($row); die;
+*/
 
 if (!$e107->isInstalled('calendar_menu'))
 {
@@ -122,9 +134,8 @@ if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  |
 	{
 		if (!$cal_super)
 		{
-			if ($sql->db_Select('event_cat', 'event_cat_addclass', 'event_cat_id = '.$ev_category))
+			if ($row =  e107::getDb()->retrieve('event_cat', 'event_cat_id, event_cat_addclass', 'event_cat_id = '.$ev_category))
 			{
-				$row = $sql->db_Fetch(MYSQL_ASSOC);
 				if (!check_class($row['event_cat_addclass']))
 				{
 					//headerx('location:event.php?'.$ev_start.'.0.m8');
@@ -174,7 +185,7 @@ if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  |
 			if ($mult_count <= 1)
 			{
 				$qry = " 0, '".intval($ev_start)."', '".intval($ev_end)."', '".$ev_allday."', '".$recurring."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$ev_email."', '".$ev_category."', '".$ev_thread."', '".intval($rec_m)."', '".intval($rec_y)."' ";
-				$id =  $sql->insert('event', $qry);
+				$id =  e107::getDb()->insert('event', $qry);
 				 
 				$data = array('method'=>'create', 'table'=>'event', 'id'=>$id, 'plugin'=>'calendar_menu', 'function'=>'dbCalendarCreate');
 				$e_event->triggerHook($data);
@@ -187,7 +198,7 @@ if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  |
 		if (isset($_POST['ne_update']))
 		{  // Bits specific to updating an existing event
 			$qry = "event_start='".intval($ev_start)."', event_end='".intval($ev_end)."', event_allday='".$ev_allday."', event_recurring='".$recurring."', event_datestamp= '".time()."', event_title= '$ev_title', event_location='$ev_location', event_details='$ev_event', event_contact='".$ev_email."', event_category='".$ev_category."', event_thread='".$ev_thread."', event_rec_m='".intval($rec_m)."', event_rec_y='".intval($rec_y)."' WHERE event_id='".intval($_POST['id'])."' ";
-			$sql->db_Update("event", $qry);
+			e107::getDb()->update("event", $qry);
 
 			$data = array('method'=>'update', 'table'=>'event', 'id'=>intval($_POST['id']), 'plugin'=>'calendar_menu', 'function'=>'dbCalendarUpdate');
 			$e_event->triggerHook($data);
@@ -243,7 +254,7 @@ if ($mult_count > 1)
     if (isset($ecal_class->pref['eventpost_forum']) && $ecal_class->pref['eventpost_forum'] == 1)
     {
 		$text .= "<tr><td class='forumheader3'>".EC_LAN_58." </td><td class='forumheader3'>".$ev_thread."</td></tr>";
-    }
+    }   
     $text .= "<tr><td class='forumheader3'>".EC_LAN_59."</td><td class='forumheader3'>".$ev_email."</td></tr>
 		<tr><td class='forumheader' colspan='2' style='text-align:center'>
             <input class='btn button' type='submit' name='mc_cancel' value='".EC_LAN_177."' />
@@ -328,9 +339,9 @@ if ($cal_super || check_class($ecal_class->pref['eventpost_admin']))
 		$wr_record['event_start'] = $mc;
 		$wr_record['event_end'] = merge_date_time($mc,$wr_record['event_end']);
 //		echo "Write record: ".$wr_record['event_start']." to ".$wr_record['event_end']."<br />";
-      if ($sql->db_Insert("event", $wr_record)) $wc++;
+      if (e107::getDb()->insert("event", $wr_record)) $wc++;
 	  }
-	  $ecal_class->cal_log(5,'db_Insert',$qry, $ev_start);
+	  $ecal_class->cal_log(5,'DB insert',$qry, $ev_start);
 
 	  $message = str_replace('-NUM-',$wc,EC_LAN_41);
 	  if ($wc != count($mult_count)) $message .= "<br /><br />".(count($mult_count)-$wc)." ".EC_LAN_180;
@@ -342,7 +353,7 @@ if ($cal_super || check_class($ecal_class->pref['eventpost_admin']))
   if (isset($_POST['confirm']))
   {
 	$qry = "event_id='".intval($_POST['existing'])."' ";
-    if ($sql->db_Delete("event", $qry))
+    if (e107::getDb()->delete("event", $qry))
     {
         $message = EC_LAN_51; //Event Deleted
 
@@ -418,8 +429,8 @@ if ($action == 'ne' || $action == 'ed')
 	switch ($action)
 	{
       case 'ed' :	// Editing existing event - read from database
-        $sql->db_Select('event', '*', 'event_id='.intval($qs[1]));
-		$row = $sql->db_Fetch(MYSQL_ASSOC);
+		$row = e107::getDb()->retrieve('event', '*', 'event_id='.intval($qs[1]));
+		//$row = $sql->db_Fetch(MYSQL_ASSOC);
         $ne_start = $row['event_start'];
 		$ne_end = $row['event_end'];
 		$allday = $row['event_allday'];
@@ -598,9 +609,9 @@ if ($action == 'ne' || $action == 'ed')
 		// Always exclude the default categories
 	$cal_arg = ($ecal_class->cal_super ? "" : "find_in_set(event_cat_addclass,'".USERCLASS_LIST."') AND ");
 	$cal_arg .= "(event_cat_name != '".EC_DEFAULT_CATEGORY."') ";
-    if ($sql->db_Select('event_cat', 'event_cat_id, event_cat_name', $cal_arg))
+    if ($records = e107::getDb()->retrieve('event_cat', 'event_cat_id, event_cat_name', $cal_arg, true))
 		{
-            while ($row = $sql->db_Fetch())
+            foreach($records AS $row)
 			{
 				$text .= "<option value='{$row['event_cat_id']}' ".(isset($ne_category) && $ne_category == $row['event_cat_id'] ? "selected='selected'" :'')." >".$row['event_cat_name']."</option>";
             }
@@ -643,11 +654,12 @@ if ($action == 'ne' || $action == 'ed')
         if (isset($ecal_class->pref['eventpost_forum']) && $ecal_class->pref['eventpost_forum'] == 1)
         {
             $text .= "
-			<tr><td class='forumheader3'>".EC_LAN_58." </td><td class='forumheader3'>
-			<input class='tbox' type='text' name='ne_thread' size='60' value='".(isset($ne_thread) ? $ne_thread : "")."' maxlength='100' style='width:95%' />
-			</td></tr>";
+			<tr><td class='forumheader3'>".EC_LAN_58." </td><td class='forumheader3'>"
+			. e107::getForm()->url('ne_thread', $ne_thread, '100', array('class'=>'tbox' , 'size'=>'60', 
+			'pattern' => '^(http|https)://')).
+			"</td></tr>";
         }
-
+	 
         // If the user is logged in and has their email set plus the field is empty then put in
         // their email address.  They can always take it out if they want, its not a required field
         if (empty($ne_email) && ($action == "ne") && defined('USEREMAIL'))
@@ -729,7 +741,7 @@ $EVENT_EVENT_DATETIME							= $calendartemplate['event_datetime'];
  
  
 $calSc->ecalClass = &$ecal_class;					// Give shortcodes a pointer to calendar class
-$calSc->setCalDate($dateArray);					// Tell shortcodes the date to display
+$calSc->setCalDate($dateArray);						// Tell shortcodes the date to display
 $calSc->catFilter = $cat_filter;					// Category filter
 $calSc->eventDisplayCodes = $EVENT_EVENT_DATETIME;	// Templates for different event types
 
@@ -765,8 +777,7 @@ if ($ds == 'event')
 	WHERE e.event_id='".intval($eveid)."'
 	{$ecal_class->extra_query} 
 	";
-	$sql2->db_Select_gen($qry);
-    $thisEvent = $sql2->db_Fetch();
+    $thisEvent = e107::getDb()->retrieve($qry);
 	// Recurring events - $action has the actual date required (no time) - could be one of a potentially large number of dates it referred to
     if ($thisEvent['event_recurring']>='1')			// Single event, selected by ID. So day/month must match
     {

@@ -27,8 +27,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_admin_calendar_menu.php');
-
+e107::lan('calendar_menu', 'admin_calendar_menu.php', true);
+ 
 $front_page['calendar'] = array(
 	'title' => EC_ADLAN_1,
 	'page' => array(
