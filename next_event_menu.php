@@ -38,7 +38,7 @@ if($cacheData = $e107->ecache->retrieve($cache_tag, $ecal_class->max_cache_time)
 	echo $cacheData;
 	return;
 }
-
+ 
 e107::lan('calendar_menu', e_LANGUAGE, false); 
 $calSc = e107::getScBatch('calendar', 'calendar_menu');
 
@@ -46,8 +46,8 @@ $calSc = e107::getScBatch('calendar', 'calendar_menu');
 //$calSc = new event_calendar_shortcodes();
 
 
-$calendartemplate   = e107::getTemplate('calendar_menu', 'calendar', 'event');
-$calSc->wrapper('calendar/event');  
+$calendartemplate   = e107::getTemplate('calendar_menu', 'calendar', 'next_event_menu');
+$calSc->wrapper('calendar/next_event_menu');  
            
 $EVENT_CAL_FE_LINE = $calendartemplate['cal_fe_line'];
 
@@ -70,7 +70,7 @@ $calSc->ecalClass = &$ecal_class;			// Give shortcodes a pointer to calendar cla
 $ev_list = $ecal_class->get_n_events($show_count, $start_time, $end_time, varset($ecal_class->pref['eventpost_fe_set'],FALSE), $show_recurring, 
 						'event_id,event_start, event_thread, event_title, event_recurring, event_allday, event_category', 'event_cat_icon');
 
-
+ 
 $cal_totev = count($ev_list);
 
 if ($cal_totev > 0)
