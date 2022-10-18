@@ -1,39 +1,37 @@
 <?php
-/*
- * e107 website system
- *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * Event calendar plugin - Front page
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_frontpage.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
-*/
-
-/**
- *	e107 Event calendar plugin
- *
- * Event calendar plugin - Front page
- *
- *	@package	e107_plugins
- *	@subpackage	event_calendar
- *	@version 	$Id$;
- */
 
 if (!defined('e107_INIT')) { exit; }
 
-e107::lan('calendar_menu', 'admin_calendar_menu.php', true);
- 
-$front_page['calendar'] = array(
-	'title' => EC_ADLAN_1,
-	'page' => array(
-	array('page' => e_PLUGIN_ABS.'calendar_menu/calendar.php', 'title' => EC_ADLAN_A09 ),
-	array('page' => e_PLUGIN_ABS.'calendar_menu/event.php', 'title' => EC_LAN_163 ))
-	);
+e107::lan('forum', "front", true);
 
-?>
+class forum_frontpage // include plugin-folder in the name.
+{
+	function config()
+	{
+		$sql 	= e107::getDb();
+		$config = array();
+
+		$config['title'] = LAN_PLUGIN_FORUM_NAME;
+
+		// Always show the 'forum index' option
+		$config['page'][] = array('page' => e107::url('forum', 'index'), 'title' => "Main forum index"); 
+
+		// Retrieve all forums (exclude parents)
+		if($sql->select('forum', 'forum_id, forum_name, forum_sef', "forum_parent != 0"))
+		{
+			while($row = $sql->fetch())
+			{
+				$url =  e107::url('forum', 'forum', 
+							array(
+								'forum_id' => $row['forum_id'], 
+								'forum_sef' => $row['forum_sef']
+							)
+						);
+
+				$config['page'][] = array('page' => $url, 'title' => $row['forum_sef']);
+			}
+		}
+
+		return $config;
+	}
+}
