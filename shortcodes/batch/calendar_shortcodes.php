@@ -28,7 +28,7 @@ TODO:
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
+e107::lan('calendar_menu', e_LANGUAGE, false); 
 
 /*
 Navigation Shortcodes

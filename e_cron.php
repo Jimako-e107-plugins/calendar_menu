@@ -24,9 +24,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-
-include_lan(e_PLUGIN.'/calendar_menu/languages/English_mailer.php');
-
+e107::lan('calendar_menu', 'mailer', true);
+ 
 class calendar_menu_cron // include plugin-folder in the name.
 {
 	private $logRequirement = 0;			// Flag to determine logging level
