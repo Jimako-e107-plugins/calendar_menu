@@ -1133,6 +1133,3 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	}
 
 }	// END - shortcode class
-
-
-?>

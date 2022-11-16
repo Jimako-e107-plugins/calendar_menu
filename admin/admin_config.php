@@ -142,18 +142,6 @@ $prefSettings = array(
 		'eventpost_mailsubject' => 2,		// String
 		'eventpost_mailaddress' => 2,		// String
 		'eventpost_emaillog' => 1			// Integer
-		),
-	'updateForthcoming' => array(
-		'eventpost_menuheading' => 2,		// String
-		'eventpost_daysforward' => 1,		// Integer
-		'eventpost_numevents' => 1,			// Integer
-		'eventpost_checkrecur' =>1, 		// Integer
-		'eventpost_linkheader' => 1,		// Integer
-		'eventpost_fe_set' => 3,  			// Array of class values
-		'eventpost_fe_hideifnone' => 1,		// Integer
-		'eventpost_fe_showrecent' => 1,		// Integer
-		'eventpost_showcaticon' => 1,		// Integer
-		'eventpost_namelink' => 1			// Integer
 		)
 );
 if (isset($_POST['updatesettings'])) 
@@ -162,16 +150,6 @@ if (isset($_POST['updatesettings']))
 	$e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
 	//$mes->addSuccess();
 }
-
-
-// ****************** FORTHCOMING EVENTS ******************
-if (isset($_POST['updateforthcoming']))
-{
-	logPrefChanges($prefSettings['updateForthcoming'], $calPref, 'EC_ADM_07');
-	$e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
-	//$mes->addSuccess(); 
-}
-
 
 $action = 'config';		// Default action - show preferences
 if (e_QUERY) 
@@ -576,123 +554,7 @@ if($action == 'cat')
 	  $ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A19, $mes->render() . $calendarmenu_text);
 	}
 }
-
-// ====================================================
-//			FORTHCOMING EVENTS OPTIONS
-// ====================================================
-
-if($action == 'forthcoming')
-{
-
-	if (!isset($calPref['eventpost_menuheading'])) $calPref['eventpost_menuheading'] = EC_ADLAN_A100;
-	if (!isset($calPref['eventpost_daysforward'])) $calPref['eventpost_daysforward'] = 30;
-	if (!isset($calPref['eventpost_numevents']))   $calPref['eventpost_numevents'] = 3;
-	if (!isset($calPref['eventpost_checkrecur']))  $calPref['eventpost_checkrecur'] = '1';
-	if (!isset($calPref['eventpost_linkheader']))  $calPref['eventpost_linkheader'] = '0';
-	if (!isset($calPref['eventpost_namelink']))    $calPref['eventpost_namelink'] = '1';
-
-
-	$text = "
-	<form method='post' action='".e_SELF."?forthcoming'>
-	<fieldset id='plugin-ecal-forthcoming'>
-	<table class='table adminform'>
-	<colgroup>
-		<col style='width:40%;' class='col-label' />
-		<col style='width:60%;' class='col-control' />
-	</colgroup>
-	<thead>
-	<tr>
-		<td>".EC_ADLAN_A108."</td>
-		<td><input class='tbox' type='text' name='eventpost_menuheading' size='35' value='".$calPref['eventpost_menuheading']."' maxlength='30' />
-		</td>
-	</tr>
-	</thead>
-
-	<tbody>
-	<tr>
-		<td>".EC_ADLAN_A101."</td>
-		<td><input class='tbox' type='text' name='eventpost_daysforward' size='20' value='".$calPref['eventpost_daysforward']."' maxlength='10' />
-		</td>
-	</tr>
-
-	<tr>
-		<td>".EC_ADLAN_A102."</td>
-		<td><input class='tbox' type='text' name='eventpost_numevents' size='20' value='".$calPref['eventpost_numevents']."' maxlength='10' />
-		</td>
-	</tr>
-
-	<tr>
-		<td>".EC_ADLAN_A103."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_checkrecur' value='1' ".($calPref['eventpost_checkrecur']==1?" checked='checked' ":"")." /></td>
-	</tr>
-
-	<tr>
-		<td>".EC_ADLAN_A107."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_fe_hideifnone' value='1' ".($calPref['eventpost_fe_hideifnone']==1?" checked='checked' ":"")." /></td>
-	</tr>
-
-	<tr>
-		<td>".EC_ADLAN_A199."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_fe_showrecent' value='1' ".($calPref['eventpost_fe_showrecent']==1?" checked='checked' ":"")." /></td>
-	</tr>
-
-	<tr>
-		<td>".EC_ADLAN_A130."<br /></td>
-		<td>
-			<select name='eventpost_namelink' class='tbox'>
-			<option value='1' ".($calPref['eventpost_namelink']=='1'?" selected='selected' ":"")." > ".EC_ADLAN_A131." </option>
-			<option value='2' ".($calPref['eventpost_namelink']=='2'?" selected='selected' ":"")." > ".EC_ADLAN_A132." </option>
-			</select>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>".EC_ADLAN_A104."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_linkheader' value='1' ".($calPref['eventpost_linkheader']==1?" checked='checked' ":"")." />
-		</td>
-	</tr>
-	
-	<tr>
-		<td>".EC_ADLAN_A120."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_showcaticon' value='1' ".($calPref['eventpost_showcaticon']==1?" checked='checked' ":"")." />
-		</td>
-	</tr>
-	
-	<tr>
-		<td>".EC_ADLAN_A118."</td>
-		<td>";
-
-// Now display all the current categories as checkboxes
-	$cal_fe_prefs = array();
-    if (isset($calPref['eventpost_fe_set'])) $cal_fe_prefs = array_flip(explode(",",$calPref['eventpost_fe_set']));
-	if (!isset($calendarmenu2_db) || !is_object($calendarmenu2_db)) $calendarmenu2_db = new DB;		// Possible notice here
-	if ($calendarmenu2_db->db_Select("event_cat", "event_cat_id,event_cat_name", " WHERE (event_cat_name != '".EC_DEFAULT_CATEGORY."') order by event_cat_name", "nowhere"))
-	{
-	  while ($row = $calendarmenu2_db->db_Fetch())
-	  {
-	    $selected = isset($cal_fe_prefs[$row['event_cat_id']]);
-		$text .= "<input type='checkbox' name='eventpost_fe_set[]' value='".$row['event_cat_id'].($selected == 1?"' checked='checked'":"'")." />".$row['event_cat_name']."<br /> ";
-	  } 
-	}
-	else
-	{
-	  $text .= EC_ADLAN_A119;		// No categories, or error
-	} 
-  
-	$text .= "</td>
-	</tr>
-	</tbody>
-	</table>
-	<div class='buttons-bar center'>
-		".$frm->admin_button('updateforthcoming', LAN_UPDATE, 'update')."
-	</div>
-	</fieldset>
-	</form>
-	</div>";
-	
-	$ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A100, $mes->render() . $text); 
-}   // End of Forthcoming Events Menu Options
-
+ 
 
 // ====================================================
 //			MAINTENANCE OPTIONS
@@ -1130,7 +992,7 @@ function admin_config_adminmenu()
 		$var['cat']['link'] ="admin_config.php?cat";
 		
 		$var['forthcoming']['text'] = EC_ADLAN_A100;
-		$var['forthcoming']['link'] ="admin_config.php?forthcoming";
+		$var['forthcoming']['link'] = "admin_forthcoming.php?mode=menu&action=prefs";
 
 		$var['maint']['text'] = EC_ADLAN_A141;
 		$var['maint']['link'] ="admin_config.php?maint";
