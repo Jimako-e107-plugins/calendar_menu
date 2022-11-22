@@ -26,9 +26,12 @@ TODO:
 	3. Check whether $prop should be calculated better
 */
 
-if (!defined('e107_INIT')) { exit; }
+if (!defined('e107_INIT'))
+{
+	exit;
+}
 
-e107::lan('calendar_menu', e_LANGUAGE, false); 
+e107::lan('calendar_menu', e_LANGUAGE, false);
 
 /*
 Navigation Shortcodes
@@ -147,10 +150,9 @@ EC_IFNOT_DISPLAY
 EC_IF_PDF
 EC_IFNOT_PDF
 */
- 
-class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
+
+class plugin_calendar_menu_shortcodes extends e_shortcode
 {
-	protected $e107;
 
 	public 	$event;						// Current event being displayed
 	public 	$ecalClass;					// Pointer to event calendar class
@@ -164,15 +166,21 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	public	$changeFlags = array();		// Used by printing routines
 	public	$printVars = array();		// USed by printing routine
 
-	private $months	= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, 
-						EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);		// 'Long' month names
-	private $monthabb = array(EC_LAN_JAN, EC_LAN_FEB, EC_LAN_MAR, EC_LAN_APR, EC_LAN_MAY, EC_LAN_JUN, 
-						EC_LAN_JUL, EC_LAN_AUG, EC_LAN_SEP, EC_LAN_OCT, EC_LAN_NOV, EC_LAN_DEC);		// 'Short' month names
-	private $days = array(EC_LAN_DAY_1, EC_LAN_DAY_2, EC_LAN_DAY_3, EC_LAN_DAY_4, EC_LAN_DAY_5, EC_LAN_DAY_6, EC_LAN_DAY_7, 
-						EC_LAN_DAY_8, EC_LAN_DAY_9, EC_LAN_DAY_10, EC_LAN_DAY_11, EC_LAN_DAY_12, EC_LAN_DAY_13, EC_LAN_DAY_14, 
-						EC_LAN_DAY_15, EC_LAN_DAY_16, EC_LAN_DAY_17, EC_LAN_DAY_18, EC_LAN_DAY_19, EC_LAN_DAY_20, EC_LAN_DAY_21, 
-						EC_LAN_DAY_22, EC_LAN_DAY_23, EC_LAN_DAY_24, EC_LAN_DAY_25, EC_LAN_DAY_26, EC_LAN_DAY_27, EC_LAN_DAY_28, 
-						EC_LAN_DAY_29, EC_LAN_DAY_30, EC_LAN_DAY_31);			// Days of month (numbers)
+	private $months	= array(
+		EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6,
+		EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11
+	);		// 'Long' month names
+	private $monthabb = array(
+		EC_LAN_JAN, EC_LAN_FEB, EC_LAN_MAR, EC_LAN_APR, EC_LAN_MAY, EC_LAN_JUN,
+		EC_LAN_JUL, EC_LAN_AUG, EC_LAN_SEP, EC_LAN_OCT, EC_LAN_NOV, EC_LAN_DEC
+	);		// 'Short' month names
+	private $days = array(
+		EC_LAN_DAY_1, EC_LAN_DAY_2, EC_LAN_DAY_3, EC_LAN_DAY_4, EC_LAN_DAY_5, EC_LAN_DAY_6, EC_LAN_DAY_7,
+		EC_LAN_DAY_8, EC_LAN_DAY_9, EC_LAN_DAY_10, EC_LAN_DAY_11, EC_LAN_DAY_12, EC_LAN_DAY_13, EC_LAN_DAY_14,
+		EC_LAN_DAY_15, EC_LAN_DAY_16, EC_LAN_DAY_17, EC_LAN_DAY_18, EC_LAN_DAY_19, EC_LAN_DAY_20, EC_LAN_DAY_21,
+		EC_LAN_DAY_22, EC_LAN_DAY_23, EC_LAN_DAY_24, EC_LAN_DAY_25, EC_LAN_DAY_26, EC_LAN_DAY_27, EC_LAN_DAY_28,
+		EC_LAN_DAY_29, EC_LAN_DAY_30, EC_LAN_DAY_31
+	);			// Days of month (numbers)
 
 	private	$nowDay;	// Today
 	private	$nowMonth;
@@ -187,24 +195,23 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 
 	private $monthStart;
 	private $monthEnd;
-	
+
 	private $prevMonth;
 	private $nextMonth;
-	
+
 	private $prevLink;	// Previous year
 	private $py;
 	private $nextLink;	// Next year
 	private $ny;
-	
+
 	private $prop;		// Start date for new event entry
 	private	$ds = '';	// Display type for some shortcodes (mostly event listing)
 
 	private	$ourDB;		// For when we need a DB object
 
-
 	public function __construct()
 	{
-		$this->e107 = e107::getInstance();
+	 
 	}
 
 
@@ -219,23 +226,22 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	 */
 	public function setCalDate($curDate)
 	{
-		$this->ds = varset($curDate['ds'],'');
+		$this->ds = varset($curDate['ds'], '');
 
 		$this->day = varset($curDate['mday'], 0);				// Day number being shown - rarely relevant
 		$this->month = $curDate['mon'];							// Number of month being shown
 		$this->year	= $curDate['year'];							// Number of year being shown
 		$this->monthStart	= gmmktime(0, 0, 0, $curDate['mon'], 1, $curDate['year']);			// Start of month to be shown
 		$this->monthEnd	= gmmktime(0, 0, 0, $curDate['mon'] + 1, 1, $curDate['year']) - 1;	// End of month to be shown
-		
-		
+
 		// Calculate date code for previous month
-		$this->prevMonth = $curDate['mon']-1;
+		$this->prevMonth = $curDate['mon'] - 1;
 		$prevYear	= $curDate['year'];
 		if ($this->prevMonth == 0)
 		{
 			$this->prevMonth = 12;
 			$prevYear--;
-		} 
+		}
 		$this->previous = gmmktime(0, 0, 0, $this->prevMonth, 1, $prevYear);		// Previous month - Used by nav
 
 		// Calculate date code for next month
@@ -245,11 +251,11 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 		{
 			$this->nextMonth	= 1;
 			$nextYear++;
-		} 
+		}
 		$this->next = gmmktime(0, 0, 0, $this->nextMonth, 1, $nextYear);		// Next month - used by nav
 
 
-		$this->py	= $curDate['year']-1;									// Number of previous year for nav
+		$this->py	= $curDate['year'] - 1;									// Number of previous year for nav
 		$this->prevLink = gmmktime(0, 0, 0, $curDate['mon'], 1, $this->py);
 		$this->ny	= $curDate['year'] + 1;								// Number of next year for nav
 		$this->nextLink = gmmktime(0, 0, 0, $curDate['mon'], 1, $this->ny);
@@ -265,27 +271,27 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	// Navigation shortcodes
 	public function sc_ec_prev_month($parm = '')
 	{
-		$class = (!empty($parm['class'])) ? $parm['class'] : '';		
-		return "<a class='ec_prev_month {$class}' href='".e_SELF."?".$this->previous."'>&lt;&lt; ".$this->months[($this->prevMonth-1)]."</a>";
+		$class = (!empty($parm['class'])) ? $parm['class'] : '';
+		return "<a class='ec_prev_month {$class}' href='" . e_SELF . "?" . $this->previous . "'>&lt;&lt; " . $this->months[($this->prevMonth - 1)] . "</a>";
 	}
 
 	public function sc_ec_next_month($parm = '')
 	{
 		$class = (!empty($parm['class'])) ? $parm['class'] : '';
-		return "<a class='ec_next_month {$class}' href='".e_SELF."?".$this->next."'> ".$this->months[($this->nextMonth-1)]." &gt;&gt;</a>";
+		return "<a class='ec_next_month {$class}' href='" . e_SELF . "?" . $this->next . "'> " . $this->months[($this->nextMonth - 1)] . " &gt;&gt;</a>";
 	}
 
 
 	public function sc_ec_prev_year($parm = '')
 	{
 		$class = (!empty($parm['class'])) ? $parm['class'] : '';
-		return "<a class='ec_prev_year {$class}' href='".e_SELF."?".$this->prevLink."'>&lt;&lt; ".$this->py."</a>";
+		return "<a class='ec_prev_year {$class}' href='" . e_SELF . "?" . $this->prevLink . "'>&lt;&lt; " . $this->py . "</a>";
 	}
 
 	public function sc_ec_next_year($parm = '')
 	{
 		$class = (!empty($parm['class'])) ? $parm['class'] : '';
-		return "<a class='ec_next_year {$class}' href='".e_SELF."?".$this->nextLink."'>".$this->ny." &gt;&gt;</a>";
+		return "<a class='ec_next_year {$class}' href='" . e_SELF . "?" . $this->nextLink . "'>" . $this->ny . " &gt;&gt;</a>";
 	}
 
 
@@ -295,23 +301,23 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 		$class = (!empty($parm['class'])) ? $parm['class'] : '';
 		for ($ii = 0; $ii < 12; $ii++)
 		{
-			$monthJump = gmmktime(0, 0, 0, $ii+1, 1, $this->year);
-			$ret .= "<a class='ec_month_list {$class}' href='".e_SELF."?".$monthJump."'>".$this->monthabb[$ii]."</a> &nbsp;";
+			$monthJump = gmmktime(0, 0, 0, $ii + 1, 1, $this->year);
+			$ret .= "<a class='ec_month_list {$class}' href='" . e_SELF . "?" . $monthJump . "'>" . $this->monthabb[$ii] . "</a> &nbsp;";
 		}
 		return $ret;
 	}
 
 
 	// Navigation buttons
-	
+
 
 	public function sc_ec_current_month($parm = '')
 	{
-		if($this->ecalClass->pref['eventpost_dateformat'] == 'my') 
+		if ($this->ecalClass->pref['eventpost_dateformat'] == 'my')
 		{
-			return $this->months[($this->month-1)].' '.$this->year;
-		} 
-		return $this->year.' '.$this->months[($this->month-1)];
+			return $this->months[($this->month - 1)] . ' ' . $this->year;
+		}
+		return $this->year . ' ' . $this->months[($this->month - 1)];
 	}
 
 
@@ -319,7 +325,7 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	public function sc_ec_nav_but_allevents($parm = '')
 	{
 		$allevents = (e_PAGE == "event.php" ? EC_LAN_96 : EC_LAN_93);
-		return "<input class='btn btn-calendar' type='submit' style='width:140px;' name='viewallevents' value='".$allevents."' title='".$allevents."' />";
+		return "<input class='btn btn-calendar' type='submit' style='width:140px;' name='viewallevents' value='" . $allevents . "' title='" . $allevents . "' />";
 	}
 
 	public function sc_ec_nav_but_viewcat($parm = '')
@@ -329,19 +335,19 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 
 	public function sc_ec_nav_but_subscription($parm = '')
 	{
-		if (isset($this->ecalClass->pref['eventpost_asubs']) && ($this->ecalClass->pref['eventpost_asubs']>0) && USER)
+		if (isset($this->ecalClass->pref['eventpost_asubs']) && ($this->ecalClass->pref['eventpost_asubs'] > 0) && USER)
 		{
-			return "<input class='btn btn-calendar' type='submit' style='width:140px;' name='subs' value='".EC_LAN_123."' title='".EC_LAN_182."' />";
+			return "<input class='btn btn-calendar' type='submit' style='width:140px;' name='subs' value='" . EC_LAN_123 . "' title='" . EC_LAN_182 . "' />";
 		}
 		return '';
 	}
 
 	public function sc_ec_nav_but_enterevent($parm = '')
 	{
-		$ret = "<input type='hidden' name='enter_new_val' value='".$this->prop."' />";
+		$ret = "<input type='hidden' name='enter_new_val' value='" . $this->prop . "' />";
 		if ($this->ecalClass->cal_super || check_class($this->ecalClass->pref['eventpost_admin']))
 		{
-			$ret .= "<input class='btn btn-calendar' type='submit' style='width:140px;' name='doit' value='".EC_LAN_94."' />";
+			$ret .= "<input class='btn btn-calendar' type='submit' style='width:140px;' name='doit' value='" . EC_LAN_94 . "' />";
 		}
 		return $ret;
 	}
@@ -351,21 +357,21 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 		$ret = '';
 		if ($this->month != $this->nowMonth || $this->year != $this->nowYear || $this->ds == 'one')
 		{	// Just jump to current page without a query part - that will default to today
-			$ret = "<input class='btn btn-calendar' type='button' style='width:140px;' name='cur' value='".EC_LAN_40."' onclick=\"javascript:document.location='".e_SELF."'\" />";
+			$ret = "<input class='btn btn-calendar' type='button' style='width:140px;' name='cur' value='" . EC_LAN_40 . "' onclick=\"javascript:document.location='" . e_SELF . "'\" />";
 		}
 		return $ret;
 	}
 
 	public function sc_ec_nav_but_printlists($parm = '')
 	{
-		if (isset($this->ecalClass->pref['eventpost_printlists']) && ($this->ecalClass->pref['eventpost_printlists']>0) && USER)
+		if (isset($this->ecalClass->pref['eventpost_printlists']) && ($this->ecalClass->pref['eventpost_printlists'] > 0) && USER)
 		{
-			return "<input class='btn btn-calendar' type='submit' style='width:140px;' name='printlists' value='".EC_LAN_164."' title='".EC_LAN_183."' />";
+			return "<input class='btn btn-calendar' type='submit' style='width:140px;' name='printlists' value='" . EC_LAN_164 . "' title='" . EC_LAN_183 . "' />";
 		}
 		else
 		{
 			return '';
-		  return 'Cant print lists';
+			return 'Cant print lists';
 		}
 	}
 
@@ -376,26 +382,26 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 		{
 			$this->ourDB = new db;			// @todo use new method 
 		}
-		
-		($parm == 'nosubmit') ? $insert = '' : $insert = "onchange='this.form.submit()'";
-		$ret = "<select name='event_cat_ids' class='tbox form-control' style='width: 140px;display: inherit;' {$insert} >\n<option value='all'>".EC_LAN_97."</option>\n";
 
-		$cal_arg = ($this->ecalClass->cal_super ? '' : " find_in_set(event_cat_class,'".USERCLASS_LIST."') AND ");
-		$cal_arg .= "(event_cat_name != '".EC_DEFAULT_CATEGORY."') ";
+		($parm == 'nosubmit') ? $insert = '' : $insert = "onchange='this.form.submit()'";
+		$ret = "<select name='event_cat_ids' class='tbox form-control' style='width: 140px;display: inherit;' {$insert} >\n<option value='all'>" . EC_LAN_97 . "</option>\n";
+
+		$cal_arg = ($this->ecalClass->cal_super ? '' : " find_in_set(event_cat_class,'" . USERCLASS_LIST . "') AND ");
+		$cal_arg .= "(event_cat_name != '" . EC_DEFAULT_CATEGORY . "') ";
 		$this->ourDB->db_Select("event_cat", "*", $cal_arg);
-		
+
 		while ($row = $this->ourDB->db_Fetch())
 		{
 			$selected = ($row['event_cat_id'] == $this->catFilter) ? " selected='selected'" : '';
-			$ret .= "<option class='tbox' value='".$row['event_cat_id']."'{$selected}>".$row['event_cat_name']."</option>\n";
+			$ret .= "<option class='tbox' value='" . $row['event_cat_id'] . "'{$selected}>" . $row['event_cat_name'] . "</option>\n";
 		}
 		$ret .= "</select>\n";
 		return $ret;
 	}
-	
 
-// Event information shortcodes
-//-----------------------------
+
+	// Event information shortcodes
+	//-----------------------------
 
 
 	public function sc_ec_event_location($parm = '')
@@ -410,45 +416,45 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 
 
 
-	public function sc_ec_if_allday($parm= '')
+	public function sc_ec_if_allday($parm = '')
 	{
 		if (!$this->event['event_allday']) return '';
 		if (trim($parm) == '') return '';
-		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{' . $parm . '}', FALSE, $this);
 	}
 
-	public function sc_ec_ifnot_allday($parm= '')
+	public function sc_ec_ifnot_allday($parm = '')
 	{
 		if ($this->event['event_allday']) return '';
 		if (trim($parm) == '') return '';
-		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{' . $parm . '}', FALSE, $this);
 	}
 
-	public function sc_ec_ifnot_sameday($parm= '')
+	public function sc_ec_ifnot_sameday($parm = '')
 	{
-		if (intval($this->event['event_end']/86400) == intval($this->event['event_start']/86400)) return '';
+		if (intval($this->event['event_end'] / 86400) == intval($this->event['event_start'] / 86400)) return '';
 		if (!$this->event['event_allday']) return '';
 		if (trim($parm) == '') return;
-		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{' . $parm . '}', FALSE, $this);
 	}
 
-	public function sc_ec_if_sameday($parm= '')
+	public function sc_ec_if_sameday($parm = '')
 	{
-		if (intval($this->event['event_end']/86400) != intval($this->event['event_start']/86400)) return '';
+		if (intval($this->event['event_end'] / 86400) != intval($this->event['event_start'] / 86400)) return '';
 		if (!$this->event['event_allday']) return '';
 		if (trim($parm) == '') return;
-		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{' . $parm . '}', FALSE, $this);
 	}
 
 
 
-// Event mailout shortcodes
-//--------------------------
+	// Event mailout shortcodes
+	//--------------------------
 	public function sc_ec_mail_heading_date($parm)
 	{
 		if (isset($parm) && ($parm !== ""))
 		{
-			return strftime($parm,$this->event['event_start']);
+			return strftime($parm, $this->event['event_start']);
 		}
 		else
 		{
@@ -486,10 +492,10 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 
 	public function sc_ec_mail_date_end($parm = '')
 	{
-		if ($this->event['event_allday'] ||($this->event['event_end'] == $this->event['event_start'])) return '';
+		if ($this->event['event_allday'] || ($this->event['event_end'] == $this->event['event_start'])) return '';
 		if ($parm !== '')
 		{
-			return strftime($parm,$this->event['event_end']);
+			return strftime($parm, $this->event['event_end']);
 		}
 		return $this->ecalClass->event_date_string($this->event['event_end']);
 	}
@@ -497,7 +503,9 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 
 	public function sc_ec_mail_time_end($parm = '')
 	{
-		if ($this->event['event_allday'] ||($this->event['event_end'] == $this->event['event_start'])) return '';
+		global $ecal_class;
+
+		if ($this->event['event_allday'] || ($this->event['event_end'] == $this->event['event_start'])) return '';
 		$endds = $ecal_class->time_string($this->event['event_end']);
 		return $endds;
 	}
@@ -511,13 +519,13 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 
 	public function sc_ec_mail_id($parm = '')
 	{
-		return 'calevent'.$this->event['event_id'];
+		return 'calevent' . $this->event['event_id'];
 	}
 
 
 	public function sc_ec_mail_details($parm = '')
 	{
-		return e107::getParser()->toHTML($this->event['event_details'], TRUE,'E_BODY');
+		return e107::getParser()->toHTML($this->event['event_details'], TRUE, 'E_BODY');
 	}
 
 
@@ -530,7 +538,7 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	public function sc_ec_mail_contact($parm = '')
 	{
 		if ($this->event['event_contact'] == '') return '';
-		return e107::getParser()->toHTML($this->event['event_contact'],TRUE,'LINKTEXT');
+		return e107::getParser()->toHTML($this->event['event_contact'], TRUE, 'LINKTEXT');
 	}
 
 
@@ -543,8 +551,8 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	public function sc_ec_mail_link($parm = '')
 	{
 		$cal_dayarray = getdate($this->event['event_start']);
-		$cal_linkut = gmmktime(0 , 0 , 0 , $cal_dayarray['mon'], $cal_dayarray['mday'], $cal_dayarray['year']).".one";  // ALways need "one"
-		return ' '.SITEURLBASE.e_PLUGIN_ABS.'calendar_menu/event.php?'.$cal_linkut.' ';
+		$cal_linkut = gmmktime(0, 0, 0, $cal_dayarray['mon'], $cal_dayarray['mday'], $cal_dayarray['year']) . ".one";  // ALways need "one"
+		return ' ' . SITEURLBASE . e_PLUGIN_ABS . 'calendar_menu/event.php?' . $cal_linkut . ' ';
 	}
 
 
@@ -561,37 +569,37 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	}
 
 
-//------------------------------------------
-// CALENDAR CALENDAR - 'Big' calendar
-//------------------------------------------
+	//------------------------------------------
+	// CALENDAR CALENDAR - 'Big' calendar
+	//------------------------------------------
 	public function sc_ec_calendar_calendar_header_day($parm = '')
 	{
-		if(isset($this->ecalClass->pref['eventpost_lenday']) && $this->ecalClass->pref['eventpost_lenday'])
+		if (isset($this->ecalClass->pref['eventpost_lenday']) && $this->ecalClass->pref['eventpost_lenday'])
 		{
-		  return "<strong>".e107::getParser()->text_truncate($this->headerDay,$this->ecalClass->pref['eventpost_lenday'],'')."</strong>";
+			return "<strong>" . e107::getParser()->text_truncate($this->headerDay, $this->ecalClass->pref['eventpost_lenday'], '') . "</strong>";
 		}
 		else
 		{
-		  return "<strong>".$this->headerDay."</strong>";
+			return "<strong>" . $this->headerDay . "</strong>";
 		}
 	}
 
 
 	public function sc_ec_calendar_calendar_day_today_heading()
 	{
-		return "<b><a href='".e_PLUGIN_ABS."calendar_menu/event.php?".$this->todayStart."'>".$this->days[($this->curDay-1)]."</a></b> <span class='smalltext'>[".EC_LAN_TODAY."]</span>";
+		return "<b><a href='" . e_PLUGIN_ABS . "calendar_menu/event.php?" . $this->todayStart . "'>" . $this->days[($this->curDay - 1)] . "</a></b> <span class='smalltext'>[" . EC_LAN_TODAY . "]</span>";
 	}
 
 
 	public function sc_ec_calendar_calendar_day_event_heading()
 	{
-		return "<a href='".e_PLUGIN_ABS."calendar_menu/event.php?".$this->todayStart.".one'>".$this->days[($this->curDay-1)]."</a>";
+		return "<a href='" . e_PLUGIN_ABS . "calendar_menu/event.php?" . $this->todayStart . ".one'>" . $this->days[($this->curDay - 1)] . "</a>";
 	}
 
 
 	public function sc_ec_calendar_calendar_day_empty_heading()
 	{
-		return "<a href='".e_PLUGIN_ABS."calendar_menu/event.php?".$this->todayStart."'>".$this->days[($this->curDay-1)]."</a>";
+		return "<a href='" . e_PLUGIN_ABS . "calendar_menu/event.php?" . $this->todayStart . "'>" . $this->days[($this->curDay - 1)] . "</a>";
 	}
 
 
@@ -601,7 +609,7 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 		if (!$this->event['startofevent']) return '';		// Only display on first day of multi-day events
 		if (is_readable(EC_RECENT_ICON))
 		{
-			return "<img src='".EC_RECENT_ICON_ABS."' alt='' /> ";
+			return "<img src='" . EC_RECENT_ICON_ABS . "' alt='' /> ";
 		}
 		return "R";
 	}
@@ -611,10 +619,13 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	{
 		switch ($this->ds)
 		{
-			case 'one' : return EC_LAN_80.': '.$this->day.' '.$this->months[$this->month-1];
-//			case 'event' : return EC_LAN_122.': '.$this->day.' '.$this->months[$this->month-1];
-			case 'event' : return EC_LAN_122;
-			default : return EC_LAN_80;
+			case 'one':
+				return EC_LAN_80 . ': ' . $this->day . ' ' . $this->months[$this->month - 1];
+				//			case 'event' : return EC_LAN_122.': '.$this->day.' '.$this->months[$this->month-1];
+			case 'event':
+				return EC_LAN_122;
+			default:
+				return EC_LAN_80;
 		}
 	}
 
@@ -622,24 +633,24 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	public function sc_ec_showevent_image($parm = '')
 	{
 		//TODO review bullet
-		$img = '';         
-		if($this->event['event_cat_icon'])
+		$img = '';
+		if ($this->event['event_cat_icon'])
 		{
 			// WARNING todo  $this->event['imagesize' doesnt work!!!!
 			$w = varset($parm['w'], $this->event['imagesize']);
 			$h = varset($parm['h'], $this->event['imagesize']);
-			$parm = array("w" => $w, "h" => $h, "class"=> "showevent_image img-responsive img-fluid" );
-		 
+			$parm = array("w" => $w, "h" => $h, "class" => "showevent_image img-responsive img-fluid");
+
 			//$img = "<img style='border:0' src='".e_PLUGIN_ABS.'calendar_menu/images/'.$this->event['event_cat_icon']."' alt='' height='".$this->event['imagesize']."' width='".$this->event['imagesize']."' />";
 			$img = $this->sc_ec_event_cat_icon($parm);
 		}
-		elseif(defined('BULLET'))
+		elseif (defined('BULLET'))
 		{
-			$img = '<img src="'.THEME_ABS.'images/'.BULLET.'" alt="" class="icon" />';
+			$img = '<img src="' . THEME_ABS . 'images/' . BULLET . '" alt="" class="icon" />';
 		}
-		elseif(file_exists(THEME.'images/bullet2.gif'))
+		elseif (file_exists(THEME . 'images/bullet2.gif'))
 		{
-			$img = '<img src="'.THEME_ABS.'images/bullet2.gif" alt="" class="icon" />';
+			$img = '<img src="' . THEME_ABS . 'images/bullet2.gif" alt="" class="icon" />';
 		}
 		return $img;
 	}
@@ -654,24 +665,24 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 
 	public function sc_ec_showevent_heading()
 	{
-		$linkut = mktime(0 , 0 , 0 , $this->month, $this->curDay, $this->year);
-		$show_title = e107::getParser()->toHTML($this->event['event_title'],FALSE,'TITLE');	// Remove entities in case need to truncate
-		if(isset($this->event['fulltopic']) && !$this->event['fulltopic'])
+		$linkut = mktime(0, 0, 0, $this->month, $this->curDay, $this->year);
+		$show_title = e107::getParser()->toHTML($this->event['event_title'], FALSE, 'TITLE');	// Remove entities in case need to truncate
+		if (isset($this->event['fulltopic']) && !$this->event['fulltopic'])
 		{
-		  $show_title = e107::getParser()->text_truncate($show_title, 10, '...');
+			$show_title = e107::getParser()->text_truncate($show_title, 10, '...');
 		}
-		if($this->event['startofevent'])
+		if ($this->event['startofevent'])
 		{
 			$eTitle = $this->event['event_title'];
 			if ($this->event['event_allday'] == 0)
 			{
-				$eTitle .= ' ('.$this->ecalClass->time_string($this->event['event_start']).')';
+				$eTitle .= ' (' . $this->ecalClass->time_string($this->event['event_start']) . ')';
 			}
-			return "<b><a title='{$eTitle}' href='".e_PLUGIN_ABS.'calendar_menu/event.php?'.$linkut.'.event.'.$this->event['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
+			return "<b><a title='{$eTitle}' href='" . e_PLUGIN_ABS . 'calendar_menu/event.php?' . $linkut . '.event.' . $this->event['event_id'] . "'><span class='mediumtext'>" . $show_title . "</span></a></b>";
 		}
 		else
 		{
-		  return "<a title='{$this->event['event_title']}' href='".e_PLUGIN_ABS.'calendar_menu/event.php?'.$linkut.'.event.'.$this->event['event_id']."'><span class='smalltext'>".$show_title."</span></a>";
+			return "<a title='{$this->event['event_title']}' href='" . e_PLUGIN_ABS . 'calendar_menu/event.php?' . $linkut . '.event.' . $this->event['event_id'] . "'><span class='smalltext'>" . $show_title . "</span></a>";
 		}
 	}
 
@@ -681,19 +692,19 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 		$ret = '';
 		if ($this->ds == 'one')
 		{
-			$ret = EC_LAN_111.$this->months[$this->month-1].' '.$this->day;
+			$ret = EC_LAN_111 . $this->months[$this->month - 1] . ' ' . $this->day;
 		}
 		elseif ($this->ds != 'event')
 		{
-			$ret = EC_LAN_112.$this->months[$this->month-1];
+			$ret = EC_LAN_112 . $this->months[$this->month - 1];
 		}
 		return $ret;
 	}
 
 
-//---------------------------------------------------
-// 	EVENT SHOWEVENT (Detail of individual events)
-//---------------------------------------------------
+	//---------------------------------------------------
+	// 	EVENT SHOWEVENT (Detail of individual events)
+	//---------------------------------------------------
 
 	public function sc_ec_event_heading_date()
 	{
@@ -723,7 +734,7 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 
 	public function sc_ec_event_time_end()
 	{
-		if ($this->event['event_allday'] ||($this->event['event_end'] == $this->event['event_start'])) return '';
+		if ($this->event['event_allday'] || ($this->event['event_end'] == $this->event['event_start'])) return '';
 		return $this->ecalClass->time_string($this->event['event_end']);
 	}
 
@@ -734,26 +745,25 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	}
 
 
-	public function sc_ec_event_cat_icon($parm='')
+	public function sc_ec_event_cat_icon($parm = '')
 	{
-		if ($this->event['event_cat_icon']  )
-		{   
-       
-			 // WARNING TODO e107::getParser()->thumbWidth() doesn't work
-			 $class = varset($parm['class'], 'event_cat_icon img-responsive img-fluid');
-			 $w = vartrue($parm['w']) ? $parm['w'] : e107::getParser()->thumbWidth(); // 190; // 160;
-		   $h = vartrue($parm['h']) ? $parm['h'] : e107::getParser()->thumbHeight(); // 130;
+		if ($this->event['event_cat_icon'])
+		{
 
-			 $opts = array(
-              'legacy' => "{e_PLUGIN}calendar_menu/images/'",
-              'class'  => $class,
-              'alt'    => $this->event['event_title'],
-              'w' => $w, 
-							'h' => $h, 							
-							'alt' => $caption,
-							'x' => 1, 
-							'crop' => 1
-         );
+			// WARNING TODO e107::getParser()->thumbWidth() doesn't work
+			$class = varset($parm['class'], 'event_cat_icon img-responsive img-fluid');
+			$w = vartrue($parm['w']) ? $parm['w'] : e107::getParser()->thumbWidth(); // 190; // 160;
+			$h = vartrue($parm['h']) ? $parm['h'] : e107::getParser()->thumbHeight(); // 130;
+
+			$opts = array(
+				'legacy' => "{e_PLUGIN}calendar_menu/images/'",
+				'class'  => $class,
+				'alt'    => $this->event['event_title'],
+				'w' => $w,
+				'h' => $h,
+				'x' => 1,
+				'crop' => 1
+			);
 			$fe_icon_file  = e107::getParser()->toImage($this->event['event_cat_icon'], $opts);
 			return $fe_icon_file;
 		}
@@ -763,13 +773,13 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 
 	public function sc_ec_event_id()
 	{
-		return 'calevent'.$this->event['event_id'];
+		return 'calevent' . $this->event['event_id'];
 	}
 
 
 	public function sc_ec_event_displaystyle()
 	{	// Returns initial state of expandable blocks
-		if (($this->ds=='event') || ($this->ds=='one'))
+		if (($this->ds == 'event') || ($this->ds == 'one'))
 		{
 			return '';	// Let block display
 		}
@@ -786,15 +796,15 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	 *
 	 * @return string - 
 	 */
-	public function sc_ec_event_displayclass($parm='')
-	{	
-    $class = empty($parm) ? "" : $parm; 
-		if (($this->ds=='event') || ($this->ds=='one'))
+	public function sc_ec_event_displayclass($parm = '')
+	{
+		$class = empty($parm) ? "" : $parm;
+		if (($this->ds == 'event') || ($this->ds == 'one'))
 		{	// Single event or one day's events - block expanded
 			return " class='{$class}'";
 		}
 		return " class='e-show-if-js e-hideme {$class}'";	// Block contracted
-//		return " class='e-hide-if-js e-showme {$parm}'";	// Block contracted
+		//		return " class='e-hide-if-js e-showme {$parm}'";	// Block contracted
 	}
 
 
@@ -812,15 +822,15 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 
 	public function sc_ec_event_author()
 	{
-		$lp = explode(".", $this->event['event_author'],2);		// Split into userid.username
+		$lp = explode(".", $this->event['event_author'], 2);		// Split into userid.username
 		if (preg_match("/[0-9]+/", $lp[0]))
 		{
 			$event_author_id = $lp[0];
 			$event_author_name = $lp[1];
 		}
-		if(USER)
+		if (USER)
 		{
-			return "<a href='".e_HTTP."user.php?id.".$event_author_id."'>".$event_author_name."</a>";
+			return "<a href='" . e_HTTP . "user.php?id." . $event_author_id . "'>" . $event_author_name . "</a>";
 		}
 		return $event_author_name;
 	}
@@ -830,11 +840,11 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	{
 		if ($this->event['event_contact'] == '') return '';
 		$tm = $this->event['event_contact'];
-		if (strpos($tm,'[') === FALSE)
+		if (strpos($tm, '[') === FALSE)
 		{	// Add a bbcode if none exists
-			$tm = '[link=mailto:'.trim($tm).']'.substr($tm,0,strpos($tm,'@')).'[/link]';
+			$tm = '[link=mailto:' . trim($tm) . ']' . substr($tm, 0, strpos($tm, '@')) . '[/link]';
 		}
-		return e107::getParser()->toHTML($tm,TRUE,'LINKTEXT');	// Return obfuscated email link
+		return e107::getParser()->toHTML($tm, TRUE, 'LINKTEXT');	// Return obfuscated email link
 	}
 
 
@@ -842,7 +852,7 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	{
 		if (isset($this->event['event_thread']) && ($this->event['event_thread'] != ''))
 		{
-		return "<a href='{$this->event['event_thread']}'><img src='".e_IMAGE_ABS."admin_images/forums_32.png' alt='' style='border:0; vertical-align:middle;' width='16' height='16' /></a> <a href='{$this->event['event_thread']}'>".EC_LAN_39."</a>";
+			return "<a href='{$this->event['event_thread']}'><img src='" . e_IMAGE_ABS . "admin_images/forums_32.png' alt='' style='border:0; vertical-align:middle;' width='16' height='16' /></a> <a href='{$this->event['event_thread']}'>" . EC_LAN_39 . "</a>";
 		}
 		return '';
 	}
@@ -850,10 +860,10 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 
 	public function sc_ec_event_options()
 	{
-		$event_author_name = strstr(varset($this->event['event_author'],'0.??'),'.');
+		$event_author_name = strstr(varset($this->event['event_author'], '0.??'), '.');
 		if (USERNAME == $event_author_name || $this->ecalClass->cal_super || check_class($this->ecalClass->pref['eventpost_admin']))
 		{
-			return "<a href='".e_PLUGIN_ABS."calendar_menu/event.php?ed.".$this->event['event_id']."'><img class='icon S16' src='".e_IMAGE_ABS."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN_ABS.'calendar_menu/event.php?de.'.$this->event['event_id']."'><img style='border:0;' src='".e_IMAGE_ABS."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
+			return "<a href='" . e_PLUGIN_ABS . "calendar_menu/event.php?ed." . $this->event['event_id'] . "'><img class='icon S16' src='" . e_IMAGE_ABS . "admin_images/edit_16.png' title='" . EC_LAN_35 . "' alt='" . EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='" . e_PLUGIN_ABS . 'calendar_menu/event.php?de.' . $this->event['event_id'] . "'><img style='border:0;' src='" . e_IMAGE_ABS . "admin_images/delete_16.png' title='" . EC_LAN_36 . "' alt='" . EC_LAN_36 . "'/></a>";
 		}
 	}
 
@@ -861,15 +871,15 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	public function sc_ec_ec_event_link()
 	{
 		$cal_dayarray = getdate($this->event['event_start']);
-		$cal_linkut = mktime(0 , 0 , 0 , $cal_dayarray['mon'], $cal_dayarray['mday'], $cal_dayarray['year']).'.one';  // ALways need "one"
-		return ' '.e_PLUGIN_ABS.'calendar_menu/event.php?'.$cal_linkut.' ';
+		$cal_linkut = mktime(0, 0, 0, $cal_dayarray['mon'], $cal_dayarray['mday'], $cal_dayarray['year']) . '.one';  // ALways need "one"
+		return ' ' . e_PLUGIN_ABS . 'calendar_menu/event.php?' . $cal_linkut . ' ';
 	}
 
 
 	public function sc_ec_event_event_date_time()
 	{
 		$et = 0;
-		if (intval($this->event['event_end']/86400) == intval($this->event['event_start']/86400)) $et += 1;
+		if (intval($this->event['event_end'] / 86400) == intval($this->event['event_start'] / 86400)) $et += 1;
 		if ($this->event['event_allday']) $et += 2;
 		if (is_array($this->eventDisplayCodes))
 		{
@@ -885,13 +895,13 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	}
 
 
-//------------------------------------------
-// EVENT ARCHIVE (list of next events at bottom of event list)
-//------------------------------------------
+	//------------------------------------------
+	// EVENT ARCHIVE (list of next events at bottom of event list)
+	//------------------------------------------
 
 	public function sc_ec_eventarchive_caption()
 	{
-		if ($this->numEvents == 0) 
+		if ($this->numEvents == 0)
 		{
 			return EC_LAN_137;
 		}
@@ -902,7 +912,7 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	public function sc_ec_eventarchive_date()
 	{
 		$startds = $this->ecalClass->event_date_string($this->event['event_start']);
-		return "<a href='".e_PLUGIN_ABS."calendar_menu/event.php?".$this->event['event_start'].'.event.'.$this->event['event_id']."'>".$startds."</a>";
+		return "<a href='" . e_PLUGIN_ABS . "calendar_menu/event.php?" . $this->event['event_start'] . '.event.' . $this->event['event_id'] . "'>" . $startds . "</a>";
 	}
 
 
@@ -913,9 +923,9 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 		$rowtext = strip_tags($rowtext);
 		$words = explode(' ', $rowtext);
 		$ret = implode(' ', array_slice($words, 0, $number));
-		if(count($words) > $number)
+		if (count($words) > $number)
 		{
-			$ret .= ' '.EC_LAN_133.' ';
+			$ret .= ' ' . EC_LAN_133 . ' ';
 		}
 		return $ret;
 	}
@@ -934,8 +944,8 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 
 
 
-//   FORTHCOMING EVENTS MENU
-//---------------------------
+	//   FORTHCOMING EVENTS MENU
+	//---------------------------
 
 	function sc_ec_next_event_recent_icon()
 	{
@@ -943,7 +953,7 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 		if (!isset($this->event['is_recent'])) return;
 		if (is_readable(EC_RECENT_ICON))
 		{
-			return "<img src='".EC_RECENT_ICON_ABS."' alt='' /> ";
+			return "<img src='" . EC_RECENT_ICON_ABS . "' alt='' /> ";
 		}
 		return '';
 	}
@@ -951,9 +961,9 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 
 	public function sc_ec_next_event_time()
 	{
-		if ($this->event['event_allday'] != 1) 
+		if ($this->event['event_allday'] != 1)
 		{
-		return $this->ecalClass->time_string($this->event['event_start']);
+			return $this->ecalClass->time_string($this->event['event_start']);
 		}
 		return '';
 	}
@@ -969,13 +979,13 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	{
 		if (isset($this->ecalClass->pref['eventpost_namelink']) && ($this->ecalClass->pref['eventpost_namelink'] == '2') && (isset($this->event['event_thread']) && ($this->event['event_thread'] != '')))
 		{
-			$fe_event_title = "<a href='".$this->event['event_thread']."'>";
+			$fe_event_title = "<a href='" . $this->event['event_thread'] . "'>";
 		}
 		else
-		{ 
-			$fe_event_title = "<a href='".e_PLUGIN_ABS."calendar_menu/event.php?".$this->event['event_start'].".event.".$this->event['event_id']."'>";
+		{
+			$fe_event_title = "<a href='" . e_PLUGIN_ABS . "calendar_menu/event.php?" . $this->event['event_start'] . ".event." . $this->event['event_id'] . "'>";
 		}
-		$fe_event_title .= $this->event['event_title']."</a>";
+		$fe_event_title .= $this->event['event_title'] . "</a>";
 		return $fe_event_title;
 	}
 
@@ -983,29 +993,28 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	public function sc_ec_next_event_icon($parm = '')
 	{
 		$fe_icon_file = '';
- 
+
 		if ($this->ecalClass->pref['eventpost_showcaticon'] == 1)
 		{
-			if($this->event['event_cat_icon'])
-			{ 
-			// WARNING todo  $this->event['imagesize' doesnt work!!!!
-			$w = varset($parm['w'], $this->event['imagesize']);
-			$h = varset($parm['h'], $this->event['imagesize']);
-			$parm = array("w" => $w, "h" => $h, "class"=> "showevent_image img-responsive img-fluid" );
-		 
-			//$img = "<img style='border:0' src='".e_PLUGIN_ABS.'calendar_menu/images/'.$this->event['event_cat_icon']."' alt='' height='".$this->event['imagesize']."' width='".$this->event['imagesize']."' />";
-			$fe_icon_file = $this->sc_ec_event_cat_icon($parm);
- 
-			}
-			elseif(defined('BULLET'))
+			if ($this->event['event_cat_icon'])
 			{
-				$fe_icon_file = THEME_ABS.'images/'.BULLET;
-				$fe_icon_file = "<img class='img-responsive' src='".$fe_icon_file."' alt='' />";
+				// WARNING todo  $this->event['imagesize' doesnt work!!!!
+				$w = varset($parm['w'], $this->event['imagesize']);
+				$h = varset($parm['h'], $this->event['imagesize']);
+				$parm = array("w" => $w, "h" => $h, "class" => "showevent_image img-responsive img-fluid");
+
+				//$img = "<img style='border:0' src='".e_PLUGIN_ABS.'calendar_menu/images/'.$this->event['event_cat_icon']."' alt='' height='".$this->event['imagesize']."' width='".$this->event['imagesize']."' />";
+				$fe_icon_file = $this->sc_ec_event_cat_icon($parm);
 			}
-			elseif(file_exists(THEME.'images/bullet2.gif'))
+			elseif (defined('BULLET'))
 			{
-				$fe_icon_file = THEME_ABS.'images/bullet2.gif';
-				$fe_icon_file = "<img class='img-responsive' src='".$fe_icon_file."' alt='' />";
+				$fe_icon_file = THEME_ABS . 'images/' . BULLET;
+				$fe_icon_file = "<img class='img-responsive' src='" . $fe_icon_file . "' alt='' />";
+			}
+			elseif (file_exists(THEME . 'images/bullet2.gif'))
+			{
+				$fe_icon_file = THEME_ABS . 'images/bullet2.gif';
+				$fe_icon_file = "<img class='img-responsive' src='" . $fe_icon_file . "' alt='' />";
 			}
 		}
 		return $fe_icon_file;
@@ -1019,8 +1028,8 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	}
 
 
-// Specific to the 'listings' page
-//--------------------------------
+	// Specific to the 'listings' page
+	//--------------------------------
 
 	public function sc_ec_pr_list_title()
 	{
@@ -1031,7 +1040,7 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	{
 		if (is_array($this->printVars['cat']))
 		{
-		return implode(', ',$this->printVars['cat']);
+			return implode(', ', $this->printVars['cat']);
 		}
 		return $this->printVars['cat'];
 	}
@@ -1057,7 +1066,7 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 		{
 			return $this->ecalClass->event_date_string($this->printVars['sd']);
 		}
-		return strftime($parm,$this->printVars['sd']);
+		return strftime($parm, $this->printVars['sd']);
 	}
 
 	public function sc_ec_pr_list_end($parm = '')
@@ -1066,27 +1075,27 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 		{
 			return $this->ecalClass->event_date_string($this->printVars['ed']);
 		}
-		return strftime($parm,$this->printVars['ed']);
+		return strftime($parm, $this->printVars['ed']);
 	}
 
 
 	public function sc_ec_now_date($parm = '')
 	{
 		if ($parm == '') return $this->ecalClass->event_date_string(time());
-		return strftime($parm,time());
+		return strftime($parm, time());
 	}
 
 	public function sc_ec_now_time($parm = '')
 	{
 		if ($parm == '') return $this->ecalClass->time_string(time());
-		return strftime($parm,time());
+		return strftime($parm, time());
 	}
 
 
 	public function sc_ec_print_button()
 	{
 		if ($this->printVars['ot'] != 'print') return;
-		return "<input type='button' value='".EC_LAN_162."' onClick='window.print()' />";
+		return "<input type='button' value='" . EC_LAN_162 . "' onClick='window.print()' />";
 	}
 
 
@@ -1094,42 +1103,41 @@ class plugin_calendar_menu_calendar_shortcodes extends e_shortcode
 	{
 		if ($this->printVars['ot'] != 'print') return;
 		if (trim($parm) == '') return;
-		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{' . $parm . '}', FALSE, $this);
 	}
 
 	public function sc_ec_ifnot_print($parm = '')
 	{
 		if ($this->printVars['ot'] == 'print') return;
 		if (trim($parm) == '') return;
-		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{' . $parm . '}', FALSE, $this);
 	}
 
 	public function sc_ec_if_display($parm = '')
 	{
 		if ($this->printVars['ot'] != 'display') return;
 		if (trim($parm) == '') return;
-		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{' . $parm . '}', FALSE, $this);
 	}
 
 	public function sc_ec_ifnot_display($parm = '')
 	{
 		if ($this->printVars['ot'] == 'display') return;
 		if (trim($parm) == '') return;
-		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{' . $parm . '}', FALSE, $this);
 	}
 
 	public function sc_ec_if_pdf($parm = '')
 	{
 		if ($this->printVars['ot'] != 'pdf') return;
 		if (trim($parm) == '') return;
-		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{' . $parm . '}', FALSE, $this);
 	}
 
 	public function sc_ec_ifnot_pdf($parm = '')
 	{
 		if ($this->printVars['ot'] == 'pdf') return;
 		if (trim($parm) == '') return;
-		return e107::getParser()->parseTemplate('{'.$parm.'}', FALSE, $this);
+		return e107::getParser()->parseTemplate('{' . $parm . '}', FALSE, $this);
 	}
-
 }	// END - shortcode class

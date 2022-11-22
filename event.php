@@ -88,7 +88,7 @@ $cal_super = $ecal_class->cal_super;
 
 //require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
 //$calSc = new event_calendar_shortcodes();
-$calSc = e107::getScBatch('calendar', 'calendar_menu');
+$calSc = e107::getScBatch('calendar_menu', true);
 
 $cat_filter = intval(varset($_POST['event_cat_ids'],-1));
 if ($cat_filter == -1) $cat_filter = '*';

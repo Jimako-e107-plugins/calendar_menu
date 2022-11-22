@@ -27,61 +27,58 @@ if (!defined('e_SINGLE_ENTRY'))
 $e107 = e107::getInstance();
 $tp = e107::getParser();
 
-if (!$e107->isInstalled('calendar_menu')) 
+require_once(e_PLUGIN . 'calendar_menu/includes/ecal_defines.php');
+
+if (!$e107->isInstalled(ECAL_PLUGIN_NAME)) 
 {
-  //headerx('location:'.e_BASE.'index.php');
   e107::redirect();
   exit;
 }
 
 if (isset($_POST['viewallevents']))
 {
-  //  Headerx('Location: '.e_PLUGIN_ABS.'calendar_menu/event.php?' . $_POST['enter_new_val']);
-  $url = e_PLUGIN_ABS.'calendar_menu/event.php?' . $_POST['enter_new_val'];
+	$url = e_PLUGIN_ABS . ECAL_PLUGIN_NAME . 'event.php?' . $_POST['enter_new_val'];
 	e107::redirect($url);
 	exit();
 } 
 if (isset($_POST['doit']))
 {
-  //  Headerx('Location: '.e_PLUGIN_ABS.'calendar_menu/event.php?ne.' . $_POST['enter_new_val']);
-  $url = e_PLUGIN_ABS.'calendar_menu/event.php?ne.' . $_POST['enter_new_val'];
+  $url = e_PLUGIN_ABS. ECAL_PLUGIN_NAME.'event.php?ne.' . $_POST['enter_new_val'];
 	e107::redirect($url);
 	exit();
 }
 if (isset($_POST['subs']))
 {
-  //  Headerx('Location: '.e_PLUGIN_ABS.'calendar_menu/subscribe.php');
-  $url = e_PLUGIN_ABS.'calendar_menu/subscribe.php';
-	e107::redirect($url);  
+	$url = e_PLUGIN_ABS . ECAL_PLUGIN_NAME . 'subscribe.php';
+	e107::redirect($url);
 	exit();
-} 
+}
 if (isset($_POST['printlists']))
 {
-  //  Headerx('Location: '.e_PLUGIN_ABS.'calendar_menu/ec_pf_page.php');
-  $url = e_PLUGIN_ABS.'calendar_menu/ec_pf_page.php';
-	e107::redirect($url);  
+	$url = e_PLUGIN_ABS . ECAL_PLUGIN_NAME . '/ec_pf_page.php';
+	e107::redirect($url);
 	exit();
-} 
+}
 
 
-//require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
-//$calSc = new event_calendar_shortcodes();
-$calSc = e107::getScBatch('calendar', 'calendar_menu');
-
-e107::lan('calendar_menu', e_LANGUAGE , false); 
  
+e107::lan(ECAL_PLUGIN_NAME, e_LANGUAGE, false);
+
 define('PAGE_NAME', EC_LAN_121);
 
-require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
+require_once(e_PLUGIN . ECAL_PLUGIN_NAME . '/ecal_class.php');
 $ecal_class = new ecal_class;
 
+$calSc = e107::getScBatch('calendar_menu', true);
+ 
+require_once(HEADERF);
 
-$calendartemplate   = e107::getTemplate('calendar_menu', 'calendar' );
+$calendartemplate   = e107::getTemplate(ECAL_PLUGIN_NAME, 'calendar');
 $calSc->wrapper('calendar/calendar');
 
-$CALENDAR_TIME_TABLE_START      = $calendartemplate['calendar']['time_table_start'];  
-$CALENDAR_TIME_TABLE		        = $calendartemplate['calendar']['time_table']; 
-$CALENDAR_NAVIGATION_TABLE      = $calendartemplate['calendar']['navigation_table'];	
+$CALENDAR_TIME_TABLE_START      = $calendartemplate['calendar']['time_table_start'];
+$CALENDAR_TIME_TABLE		    = $calendartemplate['calendar']['time_table'];
+$CALENDAR_NAVIGATION_TABLE      = $calendartemplate['calendar']['navigation_table'];
 $CALENDAR_CALENDAR_HEADER_START = $calendartemplate['calendar']['calendar_header_start'];
 $CALENDAR_CALENDAR_HEADER       = $calendartemplate['calendar']['calendar_header'];
 $CALENDAR_CALENDAR_HEADER_END   = $calendartemplate['calendar']['calendar_header_end'];
@@ -96,10 +93,10 @@ $CALENDAR_CALENDAR_DAY_EMPTY    = $calendartemplate['calendar']['calendar_day_em
 $CALENDAR_CALENDAR_DAY_END      = $calendartemplate['calendar']['calendar_day_end'];
 
 $CALENDAR_TIME_TABLE_END        = $calendartemplate['calendar']['time_table_end'];
-$cat_filter = intval(varset($_POST['event_cat_ids'],-1));
+$cat_filter = intval(varset($_POST['event_cat_ids'], -1));
 if ($cat_filter == -1) $cat_filter = '*';
 
-require_once(HEADERF);
+
 
 
 // get date within area to display
@@ -125,7 +122,6 @@ $nowday		= $ecal_class->cal_date['mday'];
 // Set date window for display
 $monthstart	= gmmktime(0, 0, 0, $month, 1, $year);			// Start of month to be shown
 $monthend	= gmmktime(0, 0, 0, $month + 1, 1, $year) - 1;	// End of month to be shown
-
 
 $calSc->ecalClass = &$ecal_class;
 $calSc->setCalDate($dateArray);
@@ -306,5 +302,3 @@ unset($ev_list);
 unset($text);
 
 require_once(FOOTERF);
-
-?>
